@@ -12,8 +12,8 @@ export default function SearchArea() {
   const [pokemonTypeList, setPokemonTypeList] = useState("");
 
   //Function to get pokemon details
-  const getPokemonDetails = async () => {
-    const pokemonName = inputValue;
+  const getPokemonDetails = async (e) => {
+    const pokemonName = inputValue ? inputValue : e.target.innerText;
 
     try {
       const pokemonState = await axios.get(`${URL}/pokemon/${pokemonName}`);
@@ -21,6 +21,7 @@ export default function SearchArea() {
       setNotFoundMessage("");
       setSrcImg(pokemonState.data.sprites.front_default);
       setPokemonTypeList("");
+      setInputValue("");
     } catch (e) {
       setPokemon({ data: "" });
       setNotFoundMessage("Pokemon Not Found");
@@ -37,8 +38,16 @@ export default function SearchArea() {
     const typeName = e.target.innerText;
     try {
       const tempTypes = await axios.get(`${URL}/type/${typeName}`);
+
+      //API get request for image source to type list
+      tempTypes.data.pokemons.forEach((pokemonName) => {
+        axios.get(`${URL}/pokemon/${pokemonName.name}`).then((result) => {
+          const tempData = result;
+          pokemonName.src = tempData.data.sprites.front_default;
+        });
+      });
       setPokemonTypeList(tempTypes.data);
-    } catch {
+    } catch (e) {
       setPokemonTypeList("Server ERROR");
       console.log("catch");
     }
@@ -70,6 +79,7 @@ export default function SearchArea() {
               <PokemonsByType
                 key={`pokemonListByType-${i}`}
                 pokemonListByType={pokemon}
+                getPokemonDetails={getPokemonDetails}
               />
             ))
           : ""}

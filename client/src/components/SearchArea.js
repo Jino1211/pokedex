@@ -5,7 +5,7 @@ const URL = "http://localhost:3001/api/pokemon/";
 
 export default function SearchArea() {
   const [inputValue, setInputValue] = useState("");
-  const [pokemon, setPokemon] = useState("");
+  const [pokemon, setPokemon] = useState({ data: "" });
 
   const getPokemonDetails = async () => {
     const pokemonName = inputValue;

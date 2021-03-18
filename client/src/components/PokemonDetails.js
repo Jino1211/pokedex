@@ -1,6 +1,13 @@
 import React from "react";
 
-export default function pokemonDetails({ pokemon, srcImg, setSrcImg }) {
+export default function pokemonDetails({
+  pokemon,
+  srcImg,
+  setSrcImg,
+  getPokemonsType,
+}) {
+  //Function to flip the Pokemon img on mouse hover
+
   const flipPokemon = () => {
     if (srcImg === pokemon.data.sprites.back_default) {
       setSrcImg(pokemon.data.sprites.front_default);
@@ -15,7 +22,20 @@ export default function pokemonDetails({ pokemon, srcImg, setSrcImg }) {
         <li className="li-pokemon-details">Name: {pokemon.data.name}</li>
         <li className="li-pokemon-details">Height: {pokemon.data.height}</li>
         <li className="li-pokemon-details">Weight: {pokemon.data.weight}</li>
-        <li className="li-pokemon-details">Types: {pokemon.data.types}</li>
+        <li className="li-pokemon-details">
+          Types:{" "}
+          {pokemon.data.types
+            ? pokemon.data.types.map((type, i) => (
+                <span
+                  key={`type-${i}`}
+                  className="type"
+                  onClick={getPokemonsType}
+                >
+                  {type}{" "}
+                </span>
+              ))
+            : ""}
+        </li>
       </ul>
       <img
         className="pokemon-img"

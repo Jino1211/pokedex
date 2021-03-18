@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { axios, POKEAPI_BASE_URL } = require("../utils/pokeAPI");
 
 const collection = Router();
 

@@ -6,10 +6,20 @@ const URL = "http://localhost:3001/api/pokemon/";
 export default function SearchArea() {
   const [inputValue, setInputValue] = useState("");
   const [pokemon, setPokemon] = useState({ data: "" });
+  const [notFoundMessage, setNotFoundMessage] = useState("");
+  const [srcImg, setSrcImg] = useState("");
 
   const getPokemonDetails = async () => {
     const pokemonName = inputValue;
-    setPokemon(await axios.get(`${URL}/${pokemonName}`));
+    try {
+      const pokemonState = await axios.get(`${URL}/${pokemonName}`);
+      setPokemon(pokemonState);
+      setNotFoundMessage("");
+      setSrcImg(pokemonState.data.sprites.front_default);
+    } catch (e) {
+      setPokemon({ data: "" });
+      setNotFoundMessage("Pokemon Not Found");
+    }
   };
 
   const handleInput = (e) => {
@@ -26,7 +36,8 @@ export default function SearchArea() {
       <button className="search-button" onClick={getPokemonDetails}>
         Search
       </button>
-      <PokemonDetails pokemon={pokemon} />
+      <div>{notFoundMessage}</div>
+      <PokemonDetails setSrcImg={setSrcImg} srcImg={srcImg} pokemon={pokemon} />
     </div>
   );
 }

@@ -26,7 +26,7 @@ pokemon.get("/:name", (req, res) => {
       res.send(pokemonData);
     })
     .catch((e) => {
-      console.log(e);
+      res.status(404).send("Pokemon Not Found");
     });
 });
 

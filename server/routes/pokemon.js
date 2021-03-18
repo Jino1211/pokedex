@@ -2,7 +2,8 @@ const { Router } = require("express");
 
 const pokemon = Router();
 
-pokemon.get("/", (req, res) => {
+//get pokémon details by name
+pokemon.get("/:name", (req, res) => {
   res.send("Pokemon route");
 });
 

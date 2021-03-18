@@ -2,7 +2,8 @@ const { Router } = require("express");
 
 const type = Router();
 
-type.get("/", (req, res) => {
+//get type details by name
+type.get("/:name", (req, res) => {
   res.send("type route");
 });
 

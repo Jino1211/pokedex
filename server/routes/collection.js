@@ -2,20 +2,27 @@ const { Router } = require("express");
 const { axios, POKEAPI_BASE_URL } = require("../utils/pokeAPI");
 
 const collection = Router();
+const pokemonsCollection = [];
 
 //get all pokémons in your collection
 collection.get("/", (req, res) => {
-  res.send("collection route");
+  res.send(pokemonsCollection);
 });
 
 //add a new pokémon to your collection
 collection.post("/catch", (req, res) => {
+  pokemonsCollection.push(req.data);
   res.send("collection route");
 });
 
 //remove a pokémon from your collection
 collection.delete("/release/:id", (req, res) => {
-  res.send("collection route");
+  const { id } = req.params;
+  const index = pokemonsCollection.findIndex(
+    (pokemon) => pokemon.id === Number(id)
+  );
+  pokemonsCollection.splice(index, 1);
+  res.send(pokemonsCollection);
 });
 
 module.exports = collection;

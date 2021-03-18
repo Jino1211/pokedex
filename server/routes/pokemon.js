@@ -8,12 +8,16 @@ pokemon.get("/:name", (req, res) => {
   axios
     .get(`${POKEAPI_BASE_URL}/pokemon/${name}`)
     .then((pokemon) => {
+      pokemonTypes = [];
+      pokemon.data.types.forEach((type) => {
+        pokemonTypes.push(type.type.name);
+      });
       const pokemonData = {
         name: pokemon.data.name,
         id: pokemon.data.id,
         height: pokemon.data.height,
         weight: pokemon.data.weight,
-        types: pokemon.data.types,
+        types: pokemonTypes,
         sprites: {
           back_default: pokemon.data.sprites.back_default,
           front_default: pokemon.data.sprites.front_default,

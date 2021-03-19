@@ -73,7 +73,7 @@ export default function SearchArea() {
   };
 
   //API post request to add pokemon to collection
-  const [collection, setCollection] = useState([]);
+  const [collection, setCollection] = useState("Empty collection");
   const addToCollection = async () => {
     if (btnText === "catch") {
       await axios.post(`${URL}/collection/catch`, pokemon);
@@ -84,6 +84,12 @@ export default function SearchArea() {
       pokemon.data.caught = false;
       setBtnText("catch");
     }
+  };
+
+  const getCollection = () => {
+    axios.get(`${URL}/collection`).then((res) => {
+      setCollection(res);
+    });
   };
 
   return (
@@ -121,7 +127,10 @@ export default function SearchArea() {
             ))
           : ""}
       </ul>
-      <PokemonCollection collection={collection} />
+      <PokemonCollection
+        collection={collection}
+        getCollection={getCollection}
+      />
     </div>
   );
 }

@@ -11,8 +11,11 @@ collection.get("/", (req, res) => {
 
 //add a new pokémon to your collection
 collection.post("/catch", (req, res) => {
-  pokemonsCollection.push(req.data);
-  res.send("collection route");
+  pokemonsCollection.forEach((pokemon) => {
+    if (pokemon === req.body.data) return res.status(418).send();
+  });
+  pokemonsCollection.push(req.body.data);
+  res.status(201).send();
 });
 
 //remove a pokémon from your collection

@@ -1,7 +1,9 @@
+import "../styles/searchArea.css";
 import { React, useState } from "react";
 import PokemonDetails from "./PokemonDetails";
 import axios from "axios";
 import PokemonsByType from "./PokemonsByType";
+import PokemonCollection from "./PokemonCollection";
 const URL = "http://localhost:3001/api";
 
 export default function SearchArea() {
@@ -10,6 +12,7 @@ export default function SearchArea() {
   const [notFoundMessage, setNotFoundMessage] = useState("");
   const [srcImg, setSrcImg] = useState("");
   const [pokemonTypeList, setPokemonTypeList] = useState("");
+  const [hidden, setHidden] = useState(true);
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
@@ -20,10 +23,13 @@ export default function SearchArea() {
       setPokemon(pokemonState);
       setNotFoundMessage("");
       setSrcImg(pokemonState.data.sprites.front_default);
+      setHidden(false);
       setPokemonTypeList("");
       setInputValue("");
     } catch (e) {
       setPokemon({ data: "" });
+      setSrcImg("");
+      setHidden(true);
       setNotFoundMessage("Pokemon Not Found");
     }
   };
@@ -53,6 +59,12 @@ export default function SearchArea() {
     }
   };
 
+  //API post request to add pokemon to collection
+  const [caught, setCaught] = useState([]);
+  const addToCollection = async () => {
+    await axios.post(`${URL}/collection/catch`, pokemon);
+  };
+
   return (
     <div className="search-area">
       <input
@@ -63,12 +75,15 @@ export default function SearchArea() {
       <button className="search-button" onClick={getPokemonDetails}>
         Search
       </button>
+
       <div>{notFoundMessage}</div>
       <PokemonDetails
         setSrcImg={setSrcImg}
         srcImg={srcImg}
         pokemon={pokemon}
         getPokemonsType={getPokemonsType}
+        hidden={hidden}
+        addToCollection={addToCollection}
       />
 
       {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
@@ -84,6 +99,7 @@ export default function SearchArea() {
             ))
           : ""}
       </ul>
+      <PokemonCollection caught={caught} />
     </div>
   );
 }

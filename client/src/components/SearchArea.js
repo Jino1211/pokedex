@@ -13,6 +13,7 @@ export default function SearchArea() {
   const [srcImg, setSrcImg] = useState("");
   const [pokemonTypeList, setPokemonTypeList] = useState("");
   const [hidden, setHidden] = useState(true);
+  const [btnText, setBtnText] = useState("catch");
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
@@ -20,6 +21,18 @@ export default function SearchArea() {
 
     try {
       const pokemonState = await axios.get(`${URL}/pokemon/${pokemonName}`);
+      pokemonState.data.caught = false;
+      setBtnText("catch");
+      const allCollection = await axios.get(`${URL}/collection`);
+      if (allCollection.data !== "Empty collection") {
+        const index = allCollection.data.findIndex(
+          (poke) => poke.name === inputValue
+        );
+        if (index !== -1) {
+          pokemonState.data.caught = true;
+          setBtnText("release");
+        }
+      }
       setPokemon(pokemonState);
       setNotFoundMessage("");
       setSrcImg(pokemonState.data.sprites.front_default);
@@ -60,9 +73,17 @@ export default function SearchArea() {
   };
 
   //API post request to add pokemon to collection
-  const [caught, setCaught] = useState([]);
+  const [collection, setCollection] = useState([]);
   const addToCollection = async () => {
-    await axios.post(`${URL}/collection/catch`, pokemon);
+    if (btnText === "catch") {
+      await axios.post(`${URL}/collection/catch`, pokemon);
+      pokemon.data.caught = true;
+      setBtnText("release");
+    } else {
+      await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
+      pokemon.data.caught = false;
+      setBtnText("catch");
+    }
   };
 
   return (
@@ -84,6 +105,7 @@ export default function SearchArea() {
         getPokemonsType={getPokemonsType}
         hidden={hidden}
         addToCollection={addToCollection}
+        btnText={btnText}
       />
 
       {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
@@ -99,7 +121,7 @@ export default function SearchArea() {
             ))
           : ""}
       </ul>
-      <PokemonCollection caught={caught} />
+      <PokemonCollection collection={collection} />
     </div>
   );
 }

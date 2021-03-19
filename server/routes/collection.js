@@ -6,16 +6,27 @@ const pokemonsCollection = [];
 
 //get all pokémons in your collection
 collection.get("/", (req, res) => {
+  if (pokemonsCollection.length === 0) return res.send("Empty collection");
   res.send(pokemonsCollection);
 });
 
 //add a new pokémon to your collection
 collection.post("/catch", (req, res) => {
-  pokemonsCollection.forEach((pokemon) => {
-    if (pokemon === req.body.data) return res.status(418).send();
-  });
-  pokemonsCollection.push(req.body.data);
-  res.status(201).send();
+  let bool = false;
+  console.log(req);
+  if (pokemonsCollection.length > 0) {
+    pokemonsCollection.forEach((pokemon) => {
+      if (pokemon.name === req.body.data.name) {
+        bool = true;
+      }
+    });
+  }
+  if (bool) {
+    return res.status(204).send();
+  } else {
+    pokemonsCollection.push(req.body.data);
+    return res.status(201).send();
+  }
 });
 
 //remove a pokémon from your collection

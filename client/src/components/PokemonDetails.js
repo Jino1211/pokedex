@@ -5,7 +5,7 @@ export default function pokemonDetails({
   srcImg,
   setSrcImg,
   getPokemonsType,
-  hidden,
+  btnText,
   addToCollection,
 }) {
   //Function to flip the Pokemon img on mouse hover
@@ -45,10 +45,7 @@ export default function pokemonDetails({
         onMouseOver={flipPokemon}
         onMouseLeave={flipPokemon}
       />
-      <button hidden={hidden} onClick={addToCollection}>
-        {" "}
-        button
-      </button>
+      <button onClick={addToCollection}>{btnText}</button>
     </div>
   );
 }

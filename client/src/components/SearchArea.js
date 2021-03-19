@@ -58,7 +58,7 @@ export default function SearchArea() {
     try {
       const tempTypes = await axios.get(`${URL}/type/${typeName}`);
 
-      //API get request for image source to type list
+      // API get request for image source to type list
       tempTypes.data.pokemons.forEach((pokemonName) => {
         axios.get(`${URL}/pokemon/${pokemonName.name}`).then((result) => {
           const tempData = result;

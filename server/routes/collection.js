@@ -13,7 +13,6 @@ collection.get("/", (req, res) => {
 //add a new pokémon to your collection
 collection.post("/catch", (req, res) => {
   let bool = false;
-  console.log(req);
   if (pokemonsCollection.length > 0) {
     pokemonsCollection.forEach((pokemon) => {
       if (pokemon.name === req.body.data.name) {

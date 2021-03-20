@@ -6,6 +6,7 @@ import PokemonDetails from "./PokemonDetails";
 import axios from "axios";
 import PokemonsByType from "./PokemonsByType";
 import PokemonCollection from "./PokemonCollection";
+import teamRocket from "../photos/team-rocket.png";
 const URL = "http://localhost:3001/api";
 const songPath =
   "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
@@ -22,12 +23,16 @@ export default function SearchArea() {
   const [hideCollection, setHideCollection] = useState(true);
   const [indexState, setIndexState] = useState(0);
   const [hiddenNextBtn, setHiddenNextBtn] = useState(true);
+  const [classNameSpinner, setClassNameSpinner] = useState("spinner-div");
+  const [blurWhenLoading, setBlurWhenLoading] = useState("");
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
     const pokemonName = inputValue ? inputValue : e.target.innerText;
     setHideCollection(true);
     try {
+      setClassNameSpinner("loader");
+      setBlurWhenLoading("blur");
       const pokemonState = await axios.get(`${URL}/pokemon/${pokemonName}`);
       pokemonState.data.caught = false;
       setBtnText("catch");
@@ -49,7 +54,11 @@ export default function SearchArea() {
       setInputValue("");
       setIndexState(0);
       setHiddenNextBtn(true);
+      setClassNameSpinner("spinner-div");
+      setBlurWhenLoading("");
     } catch (e) {
+      setClassNameSpinner("spinner-div");
+      setBlurWhenLoading("");
       setPokemon({ data: "" });
       setSrcImg("");
       setHidden(true);
@@ -68,6 +77,8 @@ export default function SearchArea() {
   const getTypeList = async (e) => {
     const typeName = e.target.innerText;
     try {
+      setClassNameSpinner("loader");
+      setBlurWhenLoading("blur");
       const tempTypes = await axios.get(`${URL}/type/${typeName}`);
 
       // API get request for image source to type list
@@ -78,8 +89,14 @@ export default function SearchArea() {
         });
       });
 
+      setClassNameSpinner("spinner-div");
+      setBlurWhenLoading("");
+
       return tempTypes.data;
     } catch (e) {
+      setClassNameSpinner("spinner-div");
+      setBlurWhenLoading("");
+
       setPokemonTypeList("Server ERROR");
       console.log("catch getPokemonsType");
     }
@@ -114,18 +131,34 @@ export default function SearchArea() {
   const addToCollection = async () => {
     if (btnText === "catch") {
       try {
+        setClassNameSpinner("loader");
+        setBlurWhenLoading("blur");
+
         await axios.post(`${URL}/collection/catch`, pokemon);
         pokemon.data.caught = true;
         setBtnText("release");
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
       } catch (e) {
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
+
         console.log("catch addToCollection");
       }
     } else {
       try {
+        setClassNameSpinner("loader");
+        setBlurWhenLoading("blur");
+
         await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
         pokemon.data.caught = false;
         setBtnText("catch");
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
       } catch (e) {
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
+
         console.log("catch delete addToCollection");
       }
     }
@@ -133,12 +166,20 @@ export default function SearchArea() {
 
   //Function to get all collection and present it on DOM
   const getCollection = () => {
+    setClassNameSpinner("loader");
+    setBlurWhenLoading("blur");
+
     axios
       .get(`${URL}/collection`)
       .then((res) => {
         setCollection(res);
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
       })
       .catch((e) => {
+        setClassNameSpinner("spinner-div");
+        setBlurWhenLoading("");
+
         console.log("catch getCollection");
       });
     setHideCollection(false);
@@ -146,6 +187,19 @@ export default function SearchArea() {
 
   return (
     <div className="search-area">
+      <AudioPlayer
+        autoPlay={true}
+        src={songPath}
+        onPlay={(e) => console.log("onPlay")}
+        loop={true}
+        style={{
+          width: "300px",
+          position: "sticky",
+          top: 0,
+          backgroundColor: "rgb(132, 196, 238)",
+          boxShadow: "none",
+        }}
+      />
       <input
         className="search-input"
         placeholder="Search Pokémon"
@@ -154,48 +208,43 @@ export default function SearchArea() {
       <button className="search-button" onClick={getPokemonDetails}>
         Search
       </button>
-
+      <div className={classNameSpinner}>
+        <img className="spinner-img" src={teamRocket} alt="TEAM ROCKET"></img>
+      </div>
       <div>{notFoundMessage}</div>
-      <PokemonDetails
-        setSrcImg={setSrcImg}
-        srcImg={srcImg}
-        pokemon={pokemon}
-        getPokemonsType={getPokemonsType}
-        hidden={hidden}
-        addToCollection={addToCollection}
-        btnText={btnText}
-        nextPage={nextPage}
-        hiddenNextBtn={hiddenNextBtn}
-      />
+      <div className={blurWhenLoading}>
+        <PokemonDetails
+          setSrcImg={setSrcImg}
+          srcImg={srcImg}
+          pokemon={pokemon}
+          getPokemonsType={getPokemonsType}
+          hidden={hidden}
+          addToCollection={addToCollection}
+          btnText={btnText}
+          nextPage={nextPage}
+          hiddenNextBtn={hiddenNextBtn}
+        />
 
-      <PokemonCollection
-        collection={collection}
-        getCollection={getCollection}
-        hideCollection={hideCollection}
-      />
+        <PokemonCollection
+          collection={collection}
+          getCollection={getCollection}
+          hideCollection={hideCollection}
+        />
 
-      {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
+        {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
 
-      <ul className="ul-pokemon-types">
-        {pokemonTypeList.pokemons
-          ? pokemonTypeList.pokemons.map((pokemon, i) => (
-              <PokemonsByType
-                key={`pokemonListByType-${i}`}
-                pokemonListByType={pokemon}
-                getPokemonDetails={getPokemonDetails}
-              />
-            ))
-          : ""}
-      </ul>
-      <AudioPlayer
-        autoPlay={true}
-        src={songPath}
-        onPlay={(e) => console.log("onPlay")}
-        loop={true}
-        style={{
-          width: "300px",
-        }}
-      />
+        <ul className="ul-pokemon-types">
+          {pokemonTypeList.pokemons
+            ? pokemonTypeList.pokemons.map((pokemon, i) => (
+                <PokemonsByType
+                  key={`pokemonListByType-${i}`}
+                  pokemonListByType={pokemon}
+                  getPokemonDetails={getPokemonDetails}
+                />
+              ))
+            : ""}
+        </ul>
+      </div>
     </div>
   );
 }

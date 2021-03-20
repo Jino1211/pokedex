@@ -7,7 +7,9 @@ h1 {
   background-color: tomato;
   margin: 0;
 }
-
+/* * {
+  background-color: rgb(132, 196, 238);
+} */
 .search-input {
   display: flex;
   justify-content: center;
@@ -22,8 +24,6 @@ h1 {
 }
 
 .search-area {
-  min-height: 90.5vh;
-  height: fit-content;
 }
 
 .catch-release-btn {
@@ -58,6 +58,8 @@ span {
 }
 .blur {
   filter: blur(8px);
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .main {
@@ -70,7 +72,9 @@ span {
 }
 
 .ul-pokemon-types {
+  position: absolute;
   display: inline-block;
+  max-width: min-content;
 }
 
 .li-pokemon-details {

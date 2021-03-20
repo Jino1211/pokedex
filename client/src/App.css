@@ -4,4 +4,6 @@
   text-align: center;
   letter-spacing: 2px;
   background-color: rgb(132, 196, 238);
+  min-height: 100vh;
+  height: fit-content;
 }

@@ -6,9 +6,9 @@ export default function PokemonsByType({
 }) {
   return (
     <div className="div-pokemon-types">
-      <li className="pokemon-list-by-type" onClick={getPokemonDetails}>
+      <li className="pokemon-list-by-type">
         <img src={pokemonListByType.src} className="img-list"></img>
-        {pokemonListByType.name}
+        <span onClick={getPokemonDetails}>{pokemonListByType.name}</span>
       </li>
     </div>
   );

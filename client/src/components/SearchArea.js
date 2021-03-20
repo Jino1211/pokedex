@@ -212,6 +212,9 @@ export default function SearchArea() {
       <button className="search-button" onClick={getPokemonDetails}>
         Search
       </button>
+      <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
+        Next
+      </button>
       <div className={classNameSpinner}>
         <img className="spinner-img" src={teamRocket} alt="TEAM ROCKET"></img>
       </div>

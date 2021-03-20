@@ -48,13 +48,12 @@ export default function pokemonDetails({
         onMouseOver={flipPokemon}
         onMouseLeave={flipPokemon}
       />
-      <button
+      <img
         className="catch-release-btn"
         hidden={hidden}
         onClick={addToCollection}
-      >
-        {btnText}
-      </button>
+        src={btnText}
+      ></img>
       <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
         Next
       </button>

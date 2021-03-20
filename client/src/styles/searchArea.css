@@ -5,6 +5,7 @@ h1 {
   color: yellow;
   text-shadow: 5px 5px 5px blue;
   background-color: tomato;
+  margin: 0;
 }
 
 .search-input {
@@ -18,6 +19,23 @@ h1 {
   height: 30px;
   width: 30%;
   margin: auto;
+}
+
+.search-area {
+  min-height: 90.5vh;
+  height: fit-content;
+}
+
+.catch-release-btn {
+  width: 5%;
+  padding: 2%;
+  cursor: pointer;
+}
+
+.pokemon-collection-item,
+button,
+span {
+  cursor: pointer;
 }
 
 .spinner-div {
@@ -40,6 +58,36 @@ h1 {
 }
 .blur {
   filter: blur(8px);
+}
+
+.main {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.collection-div {
+  display: inline-block;
+}
+
+.ul-pokemon-types {
+  display: inline-block;
+}
+
+.li-pokemon-details {
+  width: fit-content;
+}
+.div-pokemon-details {
+  text-align: start;
+}
+
+.ul-pokemon-types {
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.pokemon-list-by-type {
+  display: block;
 }
 
 @keyframes loader {

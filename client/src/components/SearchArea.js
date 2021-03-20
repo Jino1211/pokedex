@@ -7,6 +7,10 @@ import axios from "axios";
 import PokemonsByType from "./PokemonsByType";
 import PokemonCollection from "./PokemonCollection";
 import teamRocket from "../photos/team-rocket.png";
+import openPokeBall from "../photos/open-pokeball.png";
+import closePokeBall from "../photos/close-pokeball.png";
+import pikachuSad from "../photos/pikachu-sad.png";
+
 const URL = "http://localhost:3001/api";
 const songPath =
   "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
@@ -19,12 +23,12 @@ export default function SearchArea() {
   const [srcImg, setSrcImg] = useState("");
   const [pokemonTypeList, setPokemonTypeList] = useState("");
   const [hidden, setHidden] = useState(true);
-  const [btnText, setBtnText] = useState("catch");
+  const [btnText, setBtnText] = useState(openPokeBall);
   const [hideCollection, setHideCollection] = useState(true);
   const [indexState, setIndexState] = useState(0);
   const [hiddenNextBtn, setHiddenNextBtn] = useState(true);
   const [classNameSpinner, setClassNameSpinner] = useState("spinner-div");
-  const [blurWhenLoading, setBlurWhenLoading] = useState("");
+  const [blurWhenLoading, setBlurWhenLoading] = useState("main");
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
@@ -35,7 +39,7 @@ export default function SearchArea() {
       setBlurWhenLoading("blur");
       const pokemonState = await axios.get(`${URL}/pokemon/${pokemonName}`);
       pokemonState.data.caught = false;
-      setBtnText("catch");
+      setBtnText(openPokeBall);
       const allCollection = await axios.get(`${URL}/collection`);
       if (allCollection.data !== "Empty collection") {
         const index = allCollection.data.findIndex(
@@ -43,7 +47,7 @@ export default function SearchArea() {
         );
         if (index !== -1) {
           pokemonState.data.caught = true;
-          setBtnText("release");
+          setBtnText(closePokeBall);
         }
       }
       setPokemon(pokemonState);
@@ -55,14 +59,14 @@ export default function SearchArea() {
       setIndexState(0);
       setHiddenNextBtn(true);
       setClassNameSpinner("spinner-div");
-      setBlurWhenLoading("");
+      setBlurWhenLoading("main");
     } catch (e) {
       setClassNameSpinner("spinner-div");
-      setBlurWhenLoading("");
+      setBlurWhenLoading("main");
       setPokemon({ data: "" });
       setSrcImg("");
       setHidden(true);
-      setNotFoundMessage("Pokemon Not Found");
+      setNotFoundMessage(pikachuSad);
       setIndexState(0);
       setHiddenNextBtn(true);
     }
@@ -90,12 +94,12 @@ export default function SearchArea() {
       });
 
       setClassNameSpinner("spinner-div");
-      setBlurWhenLoading("");
+      setBlurWhenLoading("main");
 
       return tempTypes.data;
     } catch (e) {
       setClassNameSpinner("spinner-div");
-      setBlurWhenLoading("");
+      setBlurWhenLoading("main");
 
       setPokemonTypeList("Server ERROR");
       console.log("catch getPokemonsType");
@@ -129,19 +133,19 @@ export default function SearchArea() {
   //API post request to add pokemon to collection
   const [collection, setCollection] = useState("Empty collection");
   const addToCollection = async () => {
-    if (btnText === "catch") {
+    if (btnText === openPokeBall) {
       try {
         setClassNameSpinner("loader");
         setBlurWhenLoading("blur");
 
         await axios.post(`${URL}/collection/catch`, pokemon);
         pokemon.data.caught = true;
-        setBtnText("release");
+        setBtnText(closePokeBall);
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
       } catch (e) {
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
 
         console.log("catch addToCollection");
       }
@@ -152,12 +156,12 @@ export default function SearchArea() {
 
         await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
         pokemon.data.caught = false;
-        setBtnText("catch");
+        setBtnText(openPokeBall);
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
       } catch (e) {
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
 
         console.log("catch delete addToCollection");
       }
@@ -174,11 +178,11 @@ export default function SearchArea() {
       .then((res) => {
         setCollection(res);
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
       })
       .catch((e) => {
         setClassNameSpinner("spinner-div");
-        setBlurWhenLoading("");
+        setBlurWhenLoading("main");
 
         console.log("catch getCollection");
       });
@@ -211,7 +215,6 @@ export default function SearchArea() {
       <div className={classNameSpinner}>
         <img className="spinner-img" src={teamRocket} alt="TEAM ROCKET"></img>
       </div>
-      <div>{notFoundMessage}</div>
       <div className={blurWhenLoading}>
         <PokemonDetails
           setSrcImg={setSrcImg}
@@ -224,15 +227,8 @@ export default function SearchArea() {
           nextPage={nextPage}
           hiddenNextBtn={hiddenNextBtn}
         />
-
-        <PokemonCollection
-          collection={collection}
-          getCollection={getCollection}
-          hideCollection={hideCollection}
-        />
-
+        <img className="pikachu" src={notFoundMessage}></img>
         {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
-
         <ul className="ul-pokemon-types">
           {pokemonTypeList.pokemons
             ? pokemonTypeList.pokemons.map((pokemon, i) => (
@@ -244,6 +240,13 @@ export default function SearchArea() {
               ))
             : ""}
         </ul>
+        <div className="collection-div">
+          <PokemonCollection
+            collection={collection}
+            getCollection={getCollection}
+            hideCollection={hideCollection}
+          />
+        </div>
       </div>
     </div>
   );

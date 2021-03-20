@@ -8,6 +8,8 @@ export default function pokemonDetails({
   btnText,
   addToCollection,
   hidden,
+  hiddenNextBtn,
+  nextPage,
 }) {
   //Function to flip the Pokemon img on mouse hover
 
@@ -46,8 +48,15 @@ export default function pokemonDetails({
         onMouseOver={flipPokemon}
         onMouseLeave={flipPokemon}
       />
-      <button hidden={hidden} onClick={addToCollection}>
+      <button
+        className="catch-release-btn"
+        hidden={hidden}
+        onClick={addToCollection}
+      >
         {btnText}
+      </button>
+      <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
+        Next
       </button>
     </div>
   );

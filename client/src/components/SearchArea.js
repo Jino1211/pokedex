@@ -9,6 +9,7 @@ import PokemonCollection from "./PokemonCollection";
 const URL = "http://localhost:3001/api";
 const songPath =
   "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
+let allPokemonsOfType = {};
 
 export default function SearchArea() {
   const [inputValue, setInputValue] = useState("");
@@ -19,6 +20,8 @@ export default function SearchArea() {
   const [hidden, setHidden] = useState(true);
   const [btnText, setBtnText] = useState("catch");
   const [hideCollection, setHideCollection] = useState(true);
+  const [indexState, setIndexState] = useState(0);
+  const [hiddenNextBtn, setHiddenNextBtn] = useState(true);
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
@@ -44,11 +47,15 @@ export default function SearchArea() {
       setHidden(false);
       setPokemonTypeList("");
       setInputValue("");
+      setIndexState(0);
+      setHiddenNextBtn(true);
     } catch (e) {
       setPokemon({ data: "" });
       setSrcImg("");
       setHidden(true);
       setNotFoundMessage("Pokemon Not Found");
+      setIndexState(0);
+      setHiddenNextBtn(true);
     }
   };
 
@@ -58,7 +65,7 @@ export default function SearchArea() {
   };
 
   //API request to get list containing the names of all the pokémons of this type
-  const getPokemonsType = async (e) => {
+  const getTypeList = async (e) => {
     const typeName = e.target.innerText;
     try {
       const tempTypes = await axios.get(`${URL}/type/${typeName}`);
@@ -70,11 +77,36 @@ export default function SearchArea() {
           pokemonName.src = tempData.data.sprites.front_default;
         });
       });
-      setPokemonTypeList(tempTypes.data);
+
+      return tempTypes.data;
     } catch (e) {
       setPokemonTypeList("Server ERROR");
       console.log("catch getPokemonsType");
     }
+  };
+
+  // Get initial pokemons by types, when click on type name
+  const getPokemonsType = async (e) => {
+    allPokemonsOfType = await getTypeList(e);
+    setHiddenNextBtn(false);
+    setIndexState(0);
+    nextPage();
+  };
+
+  // Limit the render to 20 pokemons of specific type on the DOM
+  const nextPage = () => {
+    const limitPokemonType = { pokemons: [] };
+    if (indexState >= allPokemonsOfType.pokemons.length) return;
+    setIndexState(indexState + 20);
+    for (let i = indexState; i < indexState + 20; i++) {
+      limitPokemonType.pokemons.push(allPokemonsOfType.pokemons[i]);
+      if (i === allPokemonsOfType.pokemons.length - 1) {
+        setPokemonTypeList(limitPokemonType);
+        setIndexState(0);
+        break;
+      }
+    }
+    setPokemonTypeList(limitPokemonType);
   };
 
   //API post request to add pokemon to collection
@@ -132,6 +164,14 @@ export default function SearchArea() {
         hidden={hidden}
         addToCollection={addToCollection}
         btnText={btnText}
+        nextPage={nextPage}
+        hiddenNextBtn={hiddenNextBtn}
+      />
+
+      <PokemonCollection
+        collection={collection}
+        getCollection={getCollection}
+        hideCollection={hideCollection}
       />
 
       {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
@@ -147,11 +187,6 @@ export default function SearchArea() {
             ))
           : ""}
       </ul>
-      <PokemonCollection
-        collection={collection}
-        getCollection={getCollection}
-        hideCollection={hideCollection}
-      />
       <AudioPlayer
         autoPlay={true}
         src={songPath}

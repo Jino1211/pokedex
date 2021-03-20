@@ -14,6 +14,7 @@ export default function PokemonCollection({
       : collection.data;
   return (
     <>
+      <h3>My Pokemons Collection</h3>
       <div hidden={hideCollection} className="all-collection">
         {temp.map((itemCollection, i) => (
           <CollectionItem

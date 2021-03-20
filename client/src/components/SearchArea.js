@@ -73,7 +73,7 @@ export default function SearchArea() {
       setPokemonTypeList(tempTypes.data);
     } catch (e) {
       setPokemonTypeList("Server ERROR");
-      console.log("catch");
+      console.log("catch getPokemonsType");
     }
   };
 
@@ -81,21 +81,34 @@ export default function SearchArea() {
   const [collection, setCollection] = useState("Empty collection");
   const addToCollection = async () => {
     if (btnText === "catch") {
-      await axios.post(`${URL}/collection/catch`, pokemon);
-      pokemon.data.caught = true;
-      setBtnText("release");
+      try {
+        await axios.post(`${URL}/collection/catch`, pokemon);
+        pokemon.data.caught = true;
+        setBtnText("release");
+      } catch (e) {
+        console.log("catch addToCollection");
+      }
     } else {
-      await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
-      pokemon.data.caught = false;
-      setBtnText("catch");
+      try {
+        await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
+        pokemon.data.caught = false;
+        setBtnText("catch");
+      } catch (e) {
+        console.log("catch delete addToCollection");
+      }
     }
   };
 
   //Function to get all collection and present it on DOM
   const getCollection = () => {
-    axios.get(`${URL}/collection`).then((res) => {
-      setCollection(res);
-    });
+    axios
+      .get(`${URL}/collection`)
+      .then((res) => {
+        setCollection(res);
+      })
+      .catch((e) => {
+        console.log("catch getCollection");
+      });
     setHideCollection(false);
   };
 

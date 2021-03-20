@@ -6,17 +6,22 @@ const type = Router();
 //get type details by name
 type.get("/:typeName", (req, res) => {
   const { typeName } = req.params;
-  axios.get(`${POKEAPI_BASE_URL}/type/${typeName}`).then((pokemons) => {
-    const pokemonsDataTypes = {
-      id: pokemons.data.id,
-      name: pokemons.data.name,
-      pokemons: [],
-    };
-    pokemons.data.pokemon.forEach((pokemon) => {
-      pokemonsDataTypes.pokemons.push(pokemon.pokemon);
+  axios
+    .get(`${POKEAPI_BASE_URL}/type/${typeName}`)
+    .then((pokemons) => {
+      const pokemonsDataTypes = {
+        id: pokemons.data.id,
+        name: pokemons.data.name,
+        pokemons: [],
+      };
+      pokemons.data.pokemon.forEach((pokemon) => {
+        pokemonsDataTypes.pokemons.push(pokemon.pokemon);
+      });
+      res.send(pokemonsDataTypes);
+    })
+    .catch((e) => {
+      res.status(500).send("problem amigo");
     });
-    res.send(pokemonsDataTypes);
-  });
 });
 
 // Trying to get the img types from server. but cannot loading the src at time

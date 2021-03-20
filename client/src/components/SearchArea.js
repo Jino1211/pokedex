@@ -1,3 +1,5 @@
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 import "../styles/searchArea.css";
 import { React, useState } from "react";
 import PokemonDetails from "./PokemonDetails";
@@ -5,6 +7,8 @@ import axios from "axios";
 import PokemonsByType from "./PokemonsByType";
 import PokemonCollection from "./PokemonCollection";
 const URL = "http://localhost:3001/api";
+const songPath =
+  "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
 
 export default function SearchArea() {
   const [inputValue, setInputValue] = useState("");
@@ -14,11 +18,12 @@ export default function SearchArea() {
   const [pokemonTypeList, setPokemonTypeList] = useState("");
   const [hidden, setHidden] = useState(true);
   const [btnText, setBtnText] = useState("catch");
+  const [hideCollection, setHideCollection] = useState(true);
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
     const pokemonName = inputValue ? inputValue : e.target.innerText;
-
+    setHideCollection(true);
     try {
       const pokemonState = await axios.get(`${URL}/pokemon/${pokemonName}`);
       pokemonState.data.caught = false;
@@ -86,10 +91,12 @@ export default function SearchArea() {
     }
   };
 
+  //Function to get all collection and present it on DOM
   const getCollection = () => {
     axios.get(`${URL}/collection`).then((res) => {
       setCollection(res);
     });
+    setHideCollection(false);
   };
 
   return (
@@ -130,6 +137,16 @@ export default function SearchArea() {
       <PokemonCollection
         collection={collection}
         getCollection={getCollection}
+        hideCollection={hideCollection}
+      />
+      <AudioPlayer
+        autoPlay={true}
+        src={songPath}
+        onPlay={(e) => console.log("onPlay")}
+        loop={true}
+        style={{
+          width: "300px",
+        }}
       />
     </div>
   );

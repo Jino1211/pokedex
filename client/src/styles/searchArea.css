@@ -73,6 +73,7 @@ span {
 
 .collection-div {
   display: inline-block;
+  max-width: 20%;
 }
 
 .ul-pokemon-types {
@@ -82,7 +83,7 @@ span {
   column-gap: 1.5%;
   row-gap: 1%;
   position: absolute;
-  padding-right: 8%;
+  padding-right: 13%;
   /* display: inline-block; */
   max-width: min-content;
 }

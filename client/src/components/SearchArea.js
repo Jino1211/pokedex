@@ -11,7 +11,7 @@ import openPokeBall from "../photos/open-pokeball.png";
 import closePokeBall from "../photos/close-pokeball.png";
 import pikachuSad from "../photos/pikachu-sad.png";
 import searchPikachu from "../photos/search-pikachu.png";
-const URL = "https://catch-all-pokemons.herokuapp.com/api";
+const URL = "/api";
 const songPath =
   "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
 let allPokemonsOfType = {};

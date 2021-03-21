@@ -11,7 +11,6 @@ h1 {
   background-color: rgb(132, 196, 238);
 } */
 .search-input {
-  display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
@@ -22,11 +21,19 @@ h1 {
   width: 30%;
   margin: auto;
 }
+.search-button {
+  width: 4%;
+  padding: 0% 1%;
+  cursor: pointer;
+}
 
 .catch-release-btn {
   width: 5%;
   padding: 2%;
   cursor: pointer;
+}
+.catch-release-btn:hover {
+  margin: 0.3%;
 }
 
 .pokemon-collection-item,
@@ -69,8 +76,14 @@ span {
 }
 
 .ul-pokemon-types {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  grid-template-rows: max-content;
+  column-gap: 1.5%;
+  row-gap: 1%;
   position: absolute;
-  display: inline-block;
+  padding-right: 8%;
+  /* display: inline-block; */
   max-width: min-content;
 }
 
@@ -80,17 +93,20 @@ span {
 .div-pokemon-details {
   text-align: start;
 }
-
-.ul-pokemon-types {
-  /* display: flex; */
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+.div-pokemon-types {
+  border: red solid 0.1em;
 }
 .pokemon-list-by-type {
   display: block;
 }
-
+.next-btn,
+.get-collection-btn {
+  font-family: pokemon;
+  letter-spacing: 2px;
+  color: yellow;
+  text-shadow: 5px 5px 5px blue;
+  background-color: tomato;
+}
 @keyframes loader {
   from {
     transform: rotate(0deg);

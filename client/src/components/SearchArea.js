@@ -10,7 +10,7 @@ import teamRocket from "../photos/team-rocket.png";
 import openPokeBall from "../photos/open-pokeball.png";
 import closePokeBall from "../photos/close-pokeball.png";
 import pikachuSad from "../photos/pikachu-sad.png";
-
+import searchPikachu from "../photos/search-pikachu.png";
 const URL = "http://localhost:3001/api";
 const songPath =
   "https://vgmsite.com/soundtracks/pokemon-ten-years-of-pokemon/zmouwohk/1-Pokemon%20Theme%20%28Season%20Theme%29.mp3";
@@ -209,9 +209,11 @@ export default function SearchArea() {
         placeholder="Search Pokémon"
         onChange={handleInput}
       ></input>
-      <button className="search-button" onClick={getPokemonDetails}>
-        Search
-      </button>
+      <img
+        className="search-button"
+        src={searchPikachu}
+        onClick={getPokemonDetails}
+      ></img>
       <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
         Next
       </button>

@@ -38,8 +38,6 @@ export default function SearchArea() {
 
     if (pokemonName === "") return;
 
-    inputValueRef.current.value = "";
-
     setHideCollection(true);
     try {
       setClassNameSpinner("loader");
@@ -48,15 +46,19 @@ export default function SearchArea() {
       pokemonState.data.caught = false;
       setBtnText(openPokeBall);
       const allCollection = await axios.get(`${URL}/collection`);
+
       if (allCollection.data !== "Empty collection") {
         const index = allCollection.data.findIndex(
-          (poke) => poke.name === inputValueRef
+          (poke) =>
+            poke.name === inputValueRef.current.value ||
+            poke.id === Number(inputValueRef.current.value)
         );
         if (index !== -1) {
           pokemonState.data.caught = true;
           setBtnText(closePokeBall);
         }
       }
+      inputValueRef.current.value = "";
       setPokemon(pokemonState);
       setNotFoundMessage("");
       setSrcImg(pokemonState.data.sprites.front_default);
@@ -140,6 +142,8 @@ export default function SearchArea() {
         await axios.post(`${URL}/collection/catch`, pokemon);
         pokemon.data.caught = true;
         setBtnText(closePokeBall);
+        setCollection(await axios.get(`${URL}/collection`));
+
         setClassNameSpinner("spinner-div");
         setBlurWhenLoading("main");
       } catch (e) {
@@ -156,6 +160,7 @@ export default function SearchArea() {
         await axios.delete(`${URL}/collection/release/${pokemon.data.id}`);
         pokemon.data.caught = false;
         setBtnText(openPokeBall);
+        setCollection(await axios.get(`${URL}/collection`));
         setClassNameSpinner("spinner-div");
         setBlurWhenLoading("main");
       } catch (e) {

@@ -1,7 +1,7 @@
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import "../styles/searchArea.css";
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import PokemonDetails from "./PokemonDetails";
 import axios from "axios";
 import PokemonsByType from "./PokemonsByType";
@@ -17,7 +17,7 @@ const songPath =
 let allPokemonsOfType = {};
 
 export default function SearchArea() {
-  const [inputValue, setInputValue] = useState("");
+  const inputValueRef = useRef();
   const [pokemon, setPokemon] = useState({ data: "" });
   const [notFoundMessage, setNotFoundMessage] = useState("");
   const [srcImg, setSrcImg] = useState("");
@@ -32,7 +32,14 @@ export default function SearchArea() {
 
   //Function to get pokemon details
   const getPokemonDetails = async (e) => {
-    const pokemonName = inputValue ? inputValue : e.target.innerText;
+    const pokemonName = inputValueRef.current.value
+      ? inputValueRef.current.value.toLowerCase()
+      : e.target.innerText;
+
+    if (pokemonName === "") return;
+
+    inputValueRef.current.value = "";
+
     setHideCollection(true);
     try {
       setClassNameSpinner("loader");
@@ -43,7 +50,7 @@ export default function SearchArea() {
       const allCollection = await axios.get(`${URL}/collection`);
       if (allCollection.data !== "Empty collection") {
         const index = allCollection.data.findIndex(
-          (poke) => poke.name === inputValue
+          (poke) => poke.name === inputValueRef
         );
         if (index !== -1) {
           pokemonState.data.caught = true;
@@ -55,7 +62,6 @@ export default function SearchArea() {
       setSrcImg(pokemonState.data.sprites.front_default);
       setHidden(false);
       setPokemonTypeList("");
-      setInputValue("");
       setIndexState(0);
       setHiddenNextBtn(true);
       setClassNameSpinner("spinner-div");
@@ -70,11 +76,6 @@ export default function SearchArea() {
       setIndexState(0);
       setHiddenNextBtn(true);
     }
-  };
-
-  //Update state of input value
-  const handleInput = (e) => {
-    setInputValue(e.target.value.toLowerCase());
   };
 
   //API request to get list containing the names of all the pokémons of this type
@@ -205,7 +206,7 @@ export default function SearchArea() {
       <input
         className="search-input"
         placeholder="Search Pokémon"
-        onChange={handleInput}
+        ref={inputValueRef}
       ></input>
       <img
         className="search-button"
@@ -233,7 +234,7 @@ export default function SearchArea() {
         <img className="pikachu" src={notFoundMessage}></img>
         {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
         <ul className="ul-pokemon-types">
-          {pokemonTypeList.pokemons
+          {pokemonTypeList.pokemons && notFoundMessage === ""
             ? pokemonTypeList.pokemons.map((pokemon, i) => (
                 <PokemonsByType
                   key={`pokemonListByType-${i}`}

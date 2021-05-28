@@ -83,14 +83,12 @@ export default function SearchArea() {
     try {
       setClassNameSpinner("loader");
       setBlurWhenLoading("blur");
+
       const tempTypes = await axios.get(`${URL}/type/${typeName}`);
 
       // API get request for image source to type list
       tempTypes.data.pokemons.forEach((pokemonName) => {
-        axios.get(`${URL}/pokemon/${pokemonName.name}`).then((result) => {
-          const tempData = result;
-          pokemonName.src = tempData.data.sprites.front_default;
-        });
+        pokemonName.src = pokemonName.front_default;
       });
 
       setClassNameSpinner("spinner-div");

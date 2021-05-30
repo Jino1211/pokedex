@@ -21,6 +21,7 @@ export default function CollectionItem({ pokemonName }) {
         - Id: {pokemonName.id}, Height: {pokemonName.height}, Weight:{" "}
         {pokemonName.weight}, Types: {pokemonTypes}
       </span>
+      <hr />
     </div>
   );
 }

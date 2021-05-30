@@ -119,8 +119,8 @@ export default function SearchArea() {
   const nextPage = () => {
     const limitPokemonType = { pokemons: [] };
     if (indexState >= allPokemonsOfType.pokemons.length) return;
-    setIndexState(indexState + 20);
-    for (let i = indexState; i < indexState + 20; i++) {
+    setIndexState(indexState + 21);
+    for (let i = indexState; i < indexState + 21; i++) {
       limitPokemonType.pokemons.push(allPokemonsOfType.pokemons[i]);
       if (i === allPokemonsOfType.pokemons.length - 1) {
         setPokemonTypeList(limitPokemonType);
@@ -193,6 +193,13 @@ export default function SearchArea() {
     setHideCollection(false);
   };
 
+  const handleKeyUp = (e) => {
+    if (inputValueRef.current.value === "") return;
+    if (e.key === "Enter") {
+      getPokemonDetails();
+    }
+  };
+
   return (
     <div className="search-area">
       <AudioPlayer
@@ -208,21 +215,28 @@ export default function SearchArea() {
           boxShadow: "none",
         }}
       />
-      <input
-        className="search-input"
-        placeholder="Search Pokémon"
-        ref={inputValueRef}
-      ></input>
-      <img
-        className="search-button"
-        src={searchPikachu}
-        onClick={getPokemonDetails}
-      ></img>
-      <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
-        Next
-      </button>
+      <div className="input-btn">
+        <input
+          className="search-input"
+          placeholder="Search Pokémon"
+          ref={inputValueRef}
+          onKeyUp={handleKeyUp}
+        ></input>
+        <img
+          className="search-button"
+          src={searchPikachu}
+          onClick={getPokemonDetails}
+        ></img>
+      </div>
       <div className={classNameSpinner}>
-        <img className="spinner-img" src={teamRocket} alt="TEAM ROCKET"></img>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
       <div className={blurWhenLoading}>
         <PokemonDetails
@@ -237,26 +251,31 @@ export default function SearchArea() {
           hiddenNextBtn={hiddenNextBtn}
         />
         <img className="pikachu" src={notFoundMessage}></img>
-        {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
-        <ul className="ul-pokemon-types">
-          {pokemonTypeList.pokemons && notFoundMessage === ""
-            ? pokemonTypeList.pokemons.map((pokemon, i) => (
-                <PokemonsByType
-                  key={`pokemonListByType-${i}`}
-                  pokemonListByType={pokemon}
-                  getPokemonDetails={getPokemonDetails}
-                />
-              ))
-            : ""}
-        </ul>
+
         <div className="collection-div">
           <PokemonCollection
             collection={collection}
             getCollection={getCollection}
             hideCollection={hideCollection}
+            setHideCollection={setHideCollection}
           />
         </div>
       </div>
+      <button className="next-btn" hidden={hiddenNextBtn} onClick={nextPage}>
+        Next
+      </button>
+      {/* Check if the pokemon type list is not empty and loop with map to render on DOM  */}
+      <ul className="ul-pokemon-types">
+        {pokemonTypeList.pokemons && notFoundMessage === ""
+          ? pokemonTypeList.pokemons.map((pokemon, i) => (
+              <PokemonsByType
+                key={`pokemonListByType-${i}`}
+                pokemonListByType={pokemon}
+                getPokemonDetails={getPokemonDetails}
+              />
+            ))
+          : ""}
+      </ul>
     </div>
   );
 }

@@ -39,19 +39,21 @@ export default function pokemonDetails({
               ))
             : ""}
         </li>
+        <li className="img-detail">
+          <img
+            className="pokemon-img"
+            src={srcImg}
+            onMouseOver={flipPokemon}
+            onMouseLeave={flipPokemon}
+          />
+          <img
+            className="catch-release-btn"
+            hidden={hidden}
+            onClick={addToCollection}
+            src={btnText}
+          ></img>
+        </li>
       </ul>
-      <img
-        className="pokemon-img"
-        src={srcImg}
-        onMouseOver={flipPokemon}
-        onMouseLeave={flipPokemon}
-      />
-      <img
-        className="catch-release-btn"
-        hidden={hidden}
-        onClick={addToCollection}
-        src={btnText}
-      ></img>
     </div>
   );
 }
